@@ -9,8 +9,11 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        String csvFile = "src/main/resources/books.csv";
+
         SparkSession spark = SparkSession.builder().appName("Apache Spark In Practice").getOrCreate();
+
+        String csvFile = "src/main/resources/books.csv";
+
         Dataset<Row> booksDataSet = spark
                 .read()
                 .format("csv")
@@ -22,19 +25,20 @@ public class Main {
 
         Dataset<Row> distinctLangs= booksDataSet.select("language_code").distinct();
         distinctLangs.show(false);
+
         List<Row> languageList= distinctLangs.collectAsList();
+
         for(Row row: languageList)
         {
             String langCode=row.getString(0);
             Dataset<Row> langSpecificBooksDataSet=booksDataSet.filter(booksDataSet.col("language_code").equalTo(langCode));
             langSpecificBooksDataSet
-                    .coalesce(1)
                     .write()
-                    .format("csv")
+                    .option("mapreduce.fileoutputcommitter.marksuccessfuljobs","false")
                     .option("sep", ";")
                     .option("header", "true")
                     .mode(SaveMode.Overwrite)
-                    .save(langCode+"_books.csv");
+                    .csv(langCode+"_books.csv");
         }
         Thread.sleep(100000);
 

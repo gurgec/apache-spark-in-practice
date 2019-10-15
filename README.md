@@ -21,10 +21,12 @@ For every different class of language codes new csv files are created and saved.
 </dependency> 
 ```
 
-## Usage
+## Running
 
-```> sbt run```
-
+* package the application with create ```apache-spark-in-practice-1.0-SNAPSHOT.jar``` in target folder.
+    * ```mvn clean package```
+* submit the application to apache spark with ````spark-submit```` command in Apache Spark home folder. ( you need add ```SPARK_HOME``` environment variable to bash_profile as like ``` export SPARK_HOME=/Users/gokhangurgec/Work/tools/spark-2.4.4-bin-hadoop2.7```)
+    *  ``` $SPARK_HOME/bin/spark-submit --master local[*] --class "com.spark.Main" target/apache-spark-in-practice-1.0-SNAPSHOT.jar ```
 ## Contributing
 This is an example project. 
 
